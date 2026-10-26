@@ -1,6 +1,6 @@
 # Ghostwriter MCP
 
-A lightweight Python MCP server that lets OpenCode and other MCP clients work with an external [Ghostwriter](https://github.com/GhostManager/Ghostwriter) instance.
+A lightweight Python MCP server that lets OpenCode, Claude Code, Codex CLI, and other MCP clients work with an external [Ghostwriter](https://github.com/GhostManager/Ghostwriter) instance.
 
 Includes **23 tools** for reports, findings, summaries, evidence, templates, and JSON exports. Runs over stdio—no Docker, database, workers, or separate LLM service. Your AI client writes the content; Ghostwriter stores it.
 
@@ -29,9 +29,13 @@ GW_DISABLED_TOOLS=["gw_create_report","gw_delete_finding","gw_delete_evidence"]
 
 Create the API token from your Ghostwriter profile's **API Tokens** card. Keep it in the ignored `.env` file.
 
-## Connect OpenCode
+## Connect your client
 
-Run from this repository with OpenCode 2 installed:
+Complete the installation above, then run the commands for your client from this repository. Each registration uses absolute paths and reads credentials from your private `.env`.
+
+### OpenCode
+
+With OpenCode 2 installed:
 
 ```sh
 opencode mcp add --global \
@@ -39,6 +43,31 @@ opencode mcp add --global \
   ghostwriter -- "$(pwd)/.venv/bin/python" -m gw_reporting
 opencode reload
 ```
+
+### Claude Code
+
+[Install and sign in to Claude Code](https://code.claude.com/docs/en/setup), then register the server for your user:
+
+```sh
+claude mcp add --transport stdio --scope user ghostwriter \
+  --env GW_REPORTING_ENV_FILE="$(pwd)/.env" \
+  -- "$(pwd)/.venv/bin/python" -m gw_reporting
+```
+
+Restart Claude Code and use `/mcp` to check the connection. See the [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp).
+
+### Codex CLI
+
+[Install and sign in to Codex CLI](https://developers.openai.com/codex/cli/), then register the server:
+
+```sh
+codex mcp add ghostwriter \
+  --env GW_REPORTING_ENV_FILE="$(pwd)/.env" \
+  -- "$(pwd)/.venv/bin/python" -m gw_reporting
+codex mcp list
+```
+
+Restart Codex and use `/mcp` to check the connection. See the [Codex MCP documentation](https://learn.chatgpt.com/docs/extend/mcp).
 
 Other MCP clients can launch `.venv/bin/python -m gw_reporting`, setting `GW_REPORTING_ENV_FILE` to the absolute `.env` path.
 
