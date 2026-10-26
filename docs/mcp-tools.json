@@ -1,0 +1,1834 @@
+[
+  {
+    "name": "gw_attach_evidence",
+    "title": null,
+    "description": "Link existing evidence to a finding in the same authorized report; no cross-report moves.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "evidence_id": {
+          "type": "integer"
+        },
+        "finding_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "evidence_id",
+        "finding_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_attach_library_finding",
+    "title": null,
+    "description": "Copy a reusable library finding into the authorized report using attachFinding.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "library_finding_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "library_finding_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "findings"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_create_finding",
+    "title": null,
+    "description": "Create a finding directly in the external Ghostwriter report.\n\nWrites immediately with your Ghostwriter identity. Supply plain-text content\ndrafted by the calling agent, and a finding_type_id from gw_get_finding_options\nunless a default is configured. Do not invent evidence, exploitation or CVSS.\nOptional sections may be left empty for further drafting. Saved complete=false\nfor Ghostwriter QA. Reuses identical content when found. No local services or\nseparate approval workflow are involved.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "finding": {
+          "description": "Plain-text report content supplied by the calling agent; never generated server-side.",
+          "properties": {
+            "title": {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            "severity": {
+              "enum": [
+                "critical",
+                "high",
+                "medium",
+                "low",
+                "info"
+              ],
+              "type": "string"
+            },
+            "description": {
+              "maxLength": 100000,
+              "minLength": 1,
+              "type": "string"
+            },
+            "impact": {
+              "default": "",
+              "maxLength": 100000,
+              "type": "string"
+            },
+            "remediation": {
+              "default": "",
+              "maxLength": 100000,
+              "type": "string"
+            },
+            "reproduction": {
+              "default": "",
+              "maxLength": 100000,
+              "type": "string"
+            },
+            "affected_entities": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 1000,
+              "type": "array"
+            },
+            "references": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 100,
+              "type": "array"
+            },
+            "finding_type_id": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "cvss_score": {
+              "anyOf": [
+                {
+                  "maximum": 10,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "cvss_vector": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "title",
+            "severity",
+            "description"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "finding"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "findings"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_create_report",
+    "title": null,
+    "description": "Create a report in an existing allowed project. Cannot create projects or nested records.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "title"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_delete_evidence",
+    "title": null,
+    "description": "Delete one scoped evidence record. Prefer deleteEvidence, use a schema-verified mutation fallback when absent, and report storage-cleanup uncertainty.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "evidence_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "evidence_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_delete_finding",
+    "title": null,
+    "description": "Delete one finding from the specified report; cannot delete reports or projects.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "finding_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "finding_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "findings"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_download_evidence",
+    "title": null,
+    "description": "Retrieve evidence bytes as base64 through downloadEvidence; does not fetch URLs or save files.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "evidence_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "evidence_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_generate_report",
+    "title": null,
+    "description": "Request report-data JSON export and return base64 plus UI document URLs.\n\nThe verified generateReport Action is read-only export despite GraphQL mutation\nsyntax. Office rendering/download is unsupported and returns an explicit error.\nNo URLs are fetched and no local export state is stored.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "document_type": {
+          "default": "json",
+          "enum": [
+            "json",
+            "docx",
+            "pptx",
+            "xlsx"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "export"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_get_export",
+    "title": null,
+    "description": "Retrieve and decode current report-data JSON through generateReport.\n\nStateless read: this retrieves a fresh snapshot, not a saved export artifact.\nIt never renders Office documents, fetches URLs or writes files.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "export"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_get_finding_options",
+    "title": null,
+    "description": "List actual severity and finding-type IDs to select before creating a finding.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_get_project",
+    "title": null,
+    "description": "Retrieve an authorized Ghostwriter project.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_get_report",
+    "title": null,
+    "description": "Retrieve report metadata, extra-field values/specifications and selected template IDs.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_list_evidence",
+    "title": null,
+    "description": "List report evidence metadata in bounded pages; file bytes are not downloaded.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "offset": {
+          "default": 0,
+          "type": "integer"
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_list_findings",
+    "title": null,
+    "description": "Read all findings from an authorized report, paging the external API.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_list_projects",
+    "title": null,
+    "description": "List projects visible to your token within configured client/project scopes.",
+    "inputSchema": {
+      "properties": {
+        "offset": {
+          "default": 0,
+          "type": "integer"
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_list_reports",
+    "title": null,
+    "description": "List reports belonging to an authorized project.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "offset": {
+          "default": 0,
+          "type": "integer"
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_list_templates",
+    "title": null,
+    "description": "List global/client templates available to the authorized project, including document types.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "offset": {
+          "default": 0,
+          "type": "integer"
+        },
+        "limit": {
+          "default": 100,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_search_finding_library",
+    "title": null,
+    "description": "Search reusable Ghostwriter findings by title; requires upstream library read access.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "search": {
+          "type": "string"
+        },
+        "offset": {
+          "default": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "search"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_select_report_templates",
+    "title": null,
+    "description": "Select existing DOCX/PPTX templates, or explicitly null selections to clear them.\n\nChecks project/client visibility and document type; cannot upload or delete\ntemplates. Unspecified selections are preserved. Report QA status resets.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "selection": {
+          "properties": {
+            "docx_template_id": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "pptx_template_id": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "selection"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "templates"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_update_executive_summary",
+    "title": null,
+    "description": "Save plain-text summary to an existing or registered report field; GW_SUMMARY_FIELD pins the field when configured.\n\nNo universal summary field is assumed. Other extra fields are preserved through\nan atomic JSON patch. The report is marked incomplete for Ghostwriter QA.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "field_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "summary"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_update_finding",
+    "title": null,
+    "description": "Edit a report finding directly using its Ghostwriter ID.\n\nOnly supplied fields change; plain text is safely rendered. Ownership checks and\nan atomic comparison prevent cross-report writes and lost concurrent edits.\nEditing resets complete=false for QA. Never invent evidence or CVSS values.\nNo local state or separate approval workflow is required.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "finding_id": {
+          "type": "integer"
+        },
+        "changes": {
+          "description": "Only explicitly supplied fields are changed; scores may explicitly be cleared.",
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "severity": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "critical",
+                    "high",
+                    "medium",
+                    "low",
+                    "info"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "description": {
+              "anyOf": [
+                {
+                  "maxLength": 100000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "impact": {
+              "anyOf": [
+                {
+                  "maxLength": 100000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "remediation": {
+              "anyOf": [
+                {
+                  "maxLength": 100000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "reproduction": {
+              "anyOf": [
+                {
+                  "maxLength": 100000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "affected_entities": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 1000,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "references": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 100,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "finding_type_id": {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "cvss_score": {
+              "anyOf": [
+                {
+                  "maximum": 10,
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "cvss_vector": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "type": "object"
+        },
+        "expected_content_hash": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "finding_id",
+        "changes"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "findings"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_update_report",
+    "title": null,
+    "description": "Change only title/complete/delivered/archived metadata. Cannot move reports or change templates/summary.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "changes": {
+          "description": "Report metadata only; summary and templates have separate tools.",
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "complete": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "delivered": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "archived": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "changes"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "execution": null
+  },
+  {
+    "name": "gw_upload_evidence",
+    "title": null,
+    "description": "Upload supplied base64 bytes to Ghostwriter. Accepts no local paths/URLs.\n\nFile bytes remain unchanged; the upstream form decides supported file types.\nGW_MAX_FILE_BYTES limits size. Upload requires a supported uploadEvidence Action\nand token permissions. Use gw_attach_evidence separately to link a finding.",
+    "inputSchema": {
+      "properties": {
+        "project_id": {
+          "type": "integer"
+        },
+        "report_id": {
+          "type": "integer"
+        },
+        "file_base64": {
+          "type": "string"
+        },
+        "filename": {
+          "type": "string"
+        },
+        "friendly_name": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "report_id",
+        "file_base64",
+        "filename",
+        "friendly_name",
+        "caption"
+      ],
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "ok": {
+          "default": true,
+          "type": "boolean"
+        },
+        "data": {
+          "default": null,
+          "title": "Data"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "icons": null,
+    "annotations": {
+      "title": null,
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": null,
+      "openWorldHint": null
+    },
+    "meta": {
+      "_fastmcp": {
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "execution": null
+  }
+]

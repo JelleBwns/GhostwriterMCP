@@ -1,0 +1,165 @@
+{
+  "tools": [
+    {
+      "name": "gw_attach_evidence",
+      "category": "evidence",
+      "writes": true,
+      "destructive": true,
+      "description": "Link existing evidence to a finding in the same authorized report; no cross-report moves."
+    },
+    {
+      "name": "gw_attach_library_finding",
+      "category": "findings",
+      "writes": true,
+      "destructive": false,
+      "description": "Copy a reusable library finding into the authorized report using attachFinding."
+    },
+    {
+      "name": "gw_create_finding",
+      "category": "findings",
+      "writes": true,
+      "destructive": false,
+      "description": "Create a finding directly in the external Ghostwriter report.\n\n    Writes immediately with your Ghostwriter identity. Supply plain-text content\n    drafted by the calling agent, and a finding_type_id from gw_get_finding_options\n    unless a default is configured. Do not invent evidence, exploitation or CVSS.\n    Optional sections may be left empty for further drafting. Saved complete=false\n    for Ghostwriter QA. Reuses identical content when found. No local services or\n    separate approval workflow are involved."
+    },
+    {
+      "name": "gw_create_report",
+      "category": "reports",
+      "writes": true,
+      "destructive": false,
+      "description": "Create a report in an existing allowed project. Cannot create projects or nested records."
+    },
+    {
+      "name": "gw_delete_evidence",
+      "category": "evidence",
+      "writes": true,
+      "destructive": true,
+      "description": "Delete one scoped evidence record. Prefer deleteEvidence, use a schema-verified mutation fallback when absent, and report storage-cleanup uncertainty."
+    },
+    {
+      "name": "gw_delete_finding",
+      "category": "findings",
+      "writes": true,
+      "destructive": true,
+      "description": "Delete one finding from the specified report; cannot delete reports or projects."
+    },
+    {
+      "name": "gw_download_evidence",
+      "category": "evidence",
+      "writes": false,
+      "destructive": false,
+      "description": "Retrieve evidence bytes as base64 through downloadEvidence; does not fetch URLs or save files."
+    },
+    {
+      "name": "gw_generate_report",
+      "category": "export",
+      "writes": false,
+      "destructive": false,
+      "description": "Request report-data JSON export and return base64 plus UI document URLs.\n\n    The verified generateReport Action is read-only export despite GraphQL mutation\n    syntax. Office rendering/download is unsupported and returns an explicit error.\n    No URLs are fetched and no local export state is stored."
+    },
+    {
+      "name": "gw_get_export",
+      "category": "export",
+      "writes": false,
+      "destructive": false,
+      "description": "Retrieve and decode current report-data JSON through generateReport.\n\n    Stateless read: this retrieves a fresh snapshot, not a saved export artifact.\n    It never renders Office documents, fetches URLs or writes files."
+    },
+    {
+      "name": "gw_get_finding_options",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "List actual severity and finding-type IDs to select before creating a finding."
+    },
+    {
+      "name": "gw_get_project",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "Retrieve an authorized Ghostwriter project."
+    },
+    {
+      "name": "gw_get_report",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "Retrieve report metadata, extra-field values/specifications and selected template IDs."
+    },
+    {
+      "name": "gw_list_evidence",
+      "category": "evidence",
+      "writes": false,
+      "destructive": false,
+      "description": "List report evidence metadata in bounded pages; file bytes are not downloaded."
+    },
+    {
+      "name": "gw_list_findings",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "Read all findings from an authorized report, paging the external API."
+    },
+    {
+      "name": "gw_list_projects",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "List projects visible to your token within configured client/project scopes."
+    },
+    {
+      "name": "gw_list_reports",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "List reports belonging to an authorized project."
+    },
+    {
+      "name": "gw_list_templates",
+      "category": "templates",
+      "writes": false,
+      "destructive": false,
+      "description": "List global/client templates available to the authorized project, including document types."
+    },
+    {
+      "name": "gw_search_finding_library",
+      "category": "discovery",
+      "writes": false,
+      "destructive": false,
+      "description": "Search reusable Ghostwriter findings by title; requires upstream library read access."
+    },
+    {
+      "name": "gw_select_report_templates",
+      "category": "templates",
+      "writes": true,
+      "destructive": true,
+      "description": "Select existing DOCX/PPTX templates, or explicitly null selections to clear them.\n\n    Checks project/client visibility and document type; cannot upload or delete\n    templates. Unspecified selections are preserved. Report QA status resets."
+    },
+    {
+      "name": "gw_update_executive_summary",
+      "category": "reports",
+      "writes": true,
+      "destructive": true,
+      "description": "Save plain-text summary to an existing or registered report field; GW_SUMMARY_FIELD pins the field when configured.\n\n    No universal summary field is assumed. Other extra fields are preserved through\n    an atomic JSON patch. The report is marked incomplete for Ghostwriter QA."
+    },
+    {
+      "name": "gw_update_finding",
+      "category": "findings",
+      "writes": true,
+      "destructive": true,
+      "description": "Edit a report finding directly using its Ghostwriter ID.\n\n    Only supplied fields change; plain text is safely rendered. Ownership checks and\n    an atomic comparison prevent cross-report writes and lost concurrent edits.\n    Editing resets complete=false for QA. Never invent evidence or CVSS values.\n    No local state or separate approval workflow is required."
+    },
+    {
+      "name": "gw_update_report",
+      "category": "reports",
+      "writes": true,
+      "destructive": true,
+      "description": "Change only title/complete/delivered/archived metadata. Cannot move reports or change templates/summary."
+    },
+    {
+      "name": "gw_upload_evidence",
+      "category": "evidence",
+      "writes": true,
+      "destructive": false,
+      "description": "Upload supplied base64 bytes to Ghostwriter. Accepts no local paths/URLs.\n\n    File bytes remain unchanged; the upstream form decides supported file types.\n    GW_MAX_FILE_BYTES limits size. Upload requires a supported uploadEvidence Action\n    and token permissions. Use gw_attach_evidence separately to link a finding."
+    }
+  ]
+}

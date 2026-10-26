@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ghostwriter MCP"
+  short_description: "Use scoped Ghostwriter reporting tools"
+  default_prompt: "Use $ghostwriter-mcp to work with the enabled Ghostwriter reporting tools."
